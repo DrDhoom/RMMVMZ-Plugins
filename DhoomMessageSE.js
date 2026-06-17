@@ -7,8 +7,10 @@ Imported.Dhoom_MessageSE = true;
 var Dhoom = Dhoom || {};
 Dhoom.MessageSE = Dhoom.MessageSE || {};
 /*:
- * @plugindesc Dhoom MessageSE v1.0a - 18/07/2019
- * @author DrDhoom - drd-workshop.blogspot.com
+ * @plugindesc Dhoom MessageSE v2.0 - 18/07/2019 ~ 17/06/2024
+ * @author DrDhoom
+ * @url drd-workshop.blogspot.com
+ * @target MZ
  * 
  * @param Enable Switch
  * @desc Switch that determine whether message SE will be played or not. 0/None = Always Active.
@@ -21,7 +23,7 @@ Dhoom.MessageSE = Dhoom.MessageSE || {};
  * @default ["{\"name\":\"Default\",\"characterSe\":\"{\\\"name\\\":\\\"Electrocardiogram\\\",\\\"volume\\\":\\\"100\\\",\\\"pitch\\\":\\\"100\\\",\\\"pan\\\":\\\"0\\\",\\\"variance\\\":\\\"2\\\"}\",\"wordSe\":\"{\\\"name\\\":\\\"Electrocardiogram\\\",\\\"volume\\\":\\\"100\\\",\\\"pitch\\\":\\\"70\\\",\\\"pan\\\":\\\"0\\\"}\",\"sentenceSe\":\"{\\\"name\\\":\\\"Hammer\\\",\\\"volume\\\":\\\"100\\\",\\\"pitch\\\":\\\"100\\\",\\\"pan\\\":\\\"0\\\"}\",\"pageSe\":\"{\\\"name\\\":\\\"Explosion1\\\",\\\"volume\\\":\\\"100\\\",\\\"pitch\\\":\\\"100\\\",\\\"pan\\\":\\\"0\\\"}\",\"characterDelay\":\"2\",\"wordDelay\":\"6\",\"sentenceDelay\":\"12\"}","{\"name\":\"Typewriter\",\"characterSe\":\"{\\\"name\\\":\\\"Cursor1\\\",\\\"volume\\\":\\\"100\\\",\\\"pitch\\\":\\\"100\\\",\\\"pan\\\":\\\"0\\\",\\\"variance\\\":\\\"0\\\"}\",\"wordSe\":\"{\\\"name\\\":\\\"Cursor1\\\",\\\"volume\\\":\\\"100\\\",\\\"pitch\\\":\\\"110\\\",\\\"pan\\\":\\\"0\\\",\\\"variance\\\":\\\"5\\\"}\",\"sentenceSe\":\"{\\\"name\\\":\\\"Cursor1\\\",\\\"volume\\\":\\\"100\\\",\\\"pitch\\\":\\\"120\\\",\\\"pan\\\":\\\"0\\\",\\\"variance\\\":\\\"0\\\"}\",\"pageSe\":\"{\\\"name\\\":\\\"Hammer\\\",\\\"volume\\\":\\\"100\\\",\\\"pitch\\\":\\\"100\\\",\\\"pan\\\":\\\"0\\\",\\\"variance\\\":\\\"0\\\"}\",\"characterDelay\":\"1\",\"wordDelay\":\"12\",\"sentenceDelay\":\"24\"}"]
  *
  * @help =============================================================================
- * • Show Message Escape Characters
+ * • Show Text Escape Characters
  * =============================================================================
  *   \mse[PRESET]
  *   - Change message SE preset. PRESET can be preset number (start from 0) or 
@@ -40,6 +42,14 @@ Dhoom.MessageSE = Dhoom.MessageSE || {};
  *   MessageSE PRESET
  *   - Change message SE preset. PRESET can be preset number (start from 0) or 
  *     preset name. 
+ * 
+ * @command SetPreset
+ * @text Set Preset
+ * @desc Change message SE preset. PRESET can be preset number (start from 0) or preset name.
+ *
+ * @arg Preset
+ * @text Preset
+ * @desc Preset number (start from 0) or preset name.
  */
 
 /*~struct~presetSetting:
@@ -183,6 +193,14 @@ Dhoom.MessageSE.presets.forEach(function (preset) {
 });
 
 //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+// PluginManager
+//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+PluginManager.registerCommand(Dhoom.MessageSE.pluginName, "SetPreset", args => {
+    args = Dhoom.jsonParse(JSON.stringify(args));
+    $gameSystem.setMessageSePreset(args.Preset.trim());
+});
+
+//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 // SoundManager
 //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 Dhoom.MessageSE.SoundManager_preloadImportantSounds = SoundManager.preloadImportantSounds;
@@ -254,8 +272,15 @@ Window_Message.prototype.clearFlags = function () {
 
 Dhoom.MessageSE.Window_Message_processNormalCharacter = Window_Message.prototype.processNormalCharacter;
 Window_Message.prototype.processNormalCharacter = function (textState) {
-    var i = textState.index;
+    const i = textState.index;
     Dhoom.MessageSE.Window_Message_processNormalCharacter.call(this, textState);
+    this.updateMessageSE(i, textState);
+};
+
+Dhoom.MessageSE.Window_Message_processCharacter = Window_Message.prototype.processCharacter;
+Window_Message.prototype.processCharacter = function(textState) {
+    const i = textState.index;
+    Dhoom.MessageSE.Window_Message_processCharacter.call(this, textState);
     this.updateMessageSE(i, textState);
 };
 
