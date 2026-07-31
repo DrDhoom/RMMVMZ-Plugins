@@ -1,2 +1,1 @@
-# RMMV-Plugins
-RPG Maker MV Plugins
+Plugins for RPG Make MV and MZ.
