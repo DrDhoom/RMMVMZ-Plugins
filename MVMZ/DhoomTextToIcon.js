@@ -10,6 +10,7 @@ Dhoom.TexttoIcon = Dhoom.TexttoIcon || {};
 /*:
  * @plugindesc Draw icon instead of text. Version 1.1
  * @author DrDhoom
+ * @target MZ MV
  *
  * @param Text and Icon
  * @desc Texts that will be converted into icons. Icon can be more than 1. [Text, Icon Index] | [Text, Icon Index] | ...
