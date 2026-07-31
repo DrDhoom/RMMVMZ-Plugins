@@ -7,10 +7,10 @@ Imported.Dhoom_MessageSE = true;
 var Dhoom = Dhoom || {};
 Dhoom.MessageSE = Dhoom.MessageSE || {};
 /*:
- * @plugindesc Dhoom MessageSE v2.0 - 18/07/2019 ~ 17/06/2024
+ * @plugindesc Dhoom MessageSE v2.0a - 18/07/2019 ~ 31/07/2026
  * @author DrDhoom
  * @url drd-workshop.blogspot.com
- * @target MZ
+ * @target MZ MV
  * 
  * @param Enable Switch
  * @desc Switch that determine whether message SE will be played or not. 0/None = Always Active.
@@ -195,10 +195,12 @@ Dhoom.MessageSE.presets.forEach(function (preset) {
 //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 // PluginManager
 //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-PluginManager.registerCommand(Dhoom.MessageSE.pluginName, "SetPreset", args => {
-    args = Dhoom.jsonParse(JSON.stringify(args));
-    $gameSystem.setMessageSePreset(args.Preset.trim());
-});
+if (Utils.RPGMAKER_NAME === 'MZ') {
+    PluginManager.registerCommand(Dhoom.MessageSE.pluginName, "SetPreset", args => {
+        args = Dhoom.jsonParse(JSON.stringify(args));
+        $gameSystem.setMessageSePreset(args.Preset.trim());
+    });
+}
 
 //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 // SoundManager
@@ -278,7 +280,7 @@ Window_Message.prototype.processNormalCharacter = function (textState) {
 };
 
 Dhoom.MessageSE.Window_Message_processCharacter = Window_Message.prototype.processCharacter;
-Window_Message.prototype.processCharacter = function(textState) {
+Window_Message.prototype.processCharacter = function (textState) {
     const i = textState.index;
     Dhoom.MessageSE.Window_Message_processCharacter.call(this, textState);
     this.updateMessageSE(i, textState);
